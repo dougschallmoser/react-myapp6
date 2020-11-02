@@ -17,12 +17,20 @@ const Search = () => {
         }
       });
 
-      if (term) {
-        setResults(data.query.search)
-      }
+      setResults(data.query.search)
     }
 
-    search();
+    const timeoutId = setTimeout(() => {
+      if (term) {
+        search();
+      }
+    }, 500)
+
+    // clean-up function for useEffect
+    return () => {
+      clearTimeout(timeoutId)
+    }
+
   }, [term]);
 
   const renderedResults = results.map((result) => {
