@@ -1,17 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const Dropdown = ( { options, selected, onSelectedChange }) => {
+const Dropdown = ( { options, selected, onSelectedChange, label }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef();
 
   // to close dropdown when clicking outside dropdown
   useEffect(() => {
-    document.body.addEventListener('click', (event) => {
+    const onBodyClick = (event) => {
       if (ref.current.contains(event.target)) {
         return;
       }
-      setOpen(false);
-    }, { capture: true })
+      setOpen(false)
+    }
+
+    document.body.addEventListener('click', onBodyClick)
+
+    return () => {
+      document.body.removeEventListener('click', onBodyClick)
+    }
   }, [])
 
   const renderedOptions = options.map((option) => {
@@ -34,7 +40,7 @@ const Dropdown = ( { options, selected, onSelectedChange }) => {
   return (
     <div ref={ref} className="ui form">
       <div className="field">
-        <label className="label">Select a Color: </label>
+        <label className="label">{label} </label>
         <div
           onClick={() => setOpen(!open)}
           className={`ui selection dropdown ${open ? 'visible active' : ''}`}
